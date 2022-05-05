@@ -1,9 +1,14 @@
+#add essential libraries
 add_library('minim')
 
+#initialize variables
 day_ost = None
-
 background_static = None
 background_active = None
+
+cloud_gallery = None
+
+face = None
 
 #===============================================================================================================================
 #===============================================================================================================================
@@ -13,7 +18,7 @@ def initialize_image(bH, bW, cS, cI, cX, cY, cpX, cpY, canX, canY):
     backHeight = bH #background image height
     backWidth = bW  #background image width
     
-    chunkSize = cS #source image width; how much of the image we want to see
+    chunkSize = cS   #source image width; how much of the image we want to see
     chunkIncr = cI   #increment; used to increase the speed of background image movement
     chunkX = cX      #x coordinate of the source image upper left corner
     chunkY = cY      #y coordinate of the source image upper left corner
@@ -45,7 +50,9 @@ def setup():
     #global sound and background assets
     global day_ost
     global background_static, background_active
+    global cloud_gallery
     
+    #define window size and framerate (frames per second)
     size(666, 475)
     frameRate(60)
     
@@ -63,34 +70,57 @@ def setup():
     #load images into variables
     background_static = loadImage("firewatch.png")
     background_active = loadImage("day_night.png")
+    cloud_gallery = loadImage("cloud_spritesheet.png")
+    #face = loadImage("")
  
-       
-    bg_chunkX, bg_chunkY, bg_chunkIncr, bg_chunkSize, bg_backHeight, bg_backWidth, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY = initialize_image(475, 16000, 100, 5, 0, 0, 0, 0, 666, 475) #initialize active background variables
+    #initialize active background variables  
+    bg_chunkX, bg_chunkY, bg_chunkIncr, bg_chunkSize, bg_backHeight, bg_backWidth, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY = initialize_image(475, 16000, 100, 5, 0, 0, 0, 0, 666, 475) 
     
+    #display active background
+    copy(background_active, bg_chunkX, bg_chunkY, bg_chunkSize, bg_backHeight, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY)
+    
+#===============================================================================================================================
+#===============================================================================================================================
+#===============================================================================================================================
 
-    copy(background_active, bg_chunkX, bg_chunkY, bg_chunkSize, bg_backHeight, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY)#display active background
+def draw_cloud():
+    pass
+    
+#===============================================================================================================================
+#===============================================================================================================================
+#===============================================================================================================================
+    
+def display_text():
+    pass
+    
+#===============================================================================================================================
+#===============================================================================================================================
+#===============================================================================================================================
+    
+def sun_moon():
+    pass
     
 #===============================================================================================================================
 #===============================================================================================================================
 #===============================================================================================================================
     
 def draw():
-    global day_ost
+    #set infinite loop; song will rewind and begin playing when song ends
     if day_ost.isPlaying() == False:
         day_ost.rewind()
         day_ost.play()
-    
     
     #global active background variables
     global bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY
     global bg_backHeight, bg_backWidth, bg_chunkSize, bg_chunkIncr, bg_chunkX, bg_chunkY
     
-    
-    bg_chunkX, bg_chunkIncr, bg_chunkSize, bg_backWidth = active_image(bg_chunkX, bg_chunkIncr, bg_chunkSize, bg_backWidth) #move background
+    #move background
+    bg_chunkX, bg_chunkIncr, bg_chunkSize, bg_backWidth = active_image(bg_chunkX, bg_chunkIncr, bg_chunkSize, bg_backWidth) 
         
-        
-    copy(background_active, bg_chunkX, bg_chunkY, bg_chunkSize, bg_backHeight, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY) #display active background
-    image(background_static, 0, 100)#display static active
+    #display active background   
+    copy(background_active, bg_chunkX, bg_chunkY, bg_chunkSize, bg_backHeight, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY) 
+    #display static active
+    image(background_static, 0, 100)
 
 #===============================================================================================================================
 #===============================================================================================================================
