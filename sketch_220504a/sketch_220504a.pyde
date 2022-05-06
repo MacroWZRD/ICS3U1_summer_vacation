@@ -8,6 +8,14 @@ background_active = None
 
 cloud_gallery = None
 
+Lx1 = 200
+Lx2 = 700
+Mx1 = 800
+Mx2 = 550
+Mx3 = 100
+Sx1 = 400
+Sx2 = 450
+
 face = None
 
 #===============================================================================================================================
@@ -50,7 +58,7 @@ def setup():
     #global sound and background assets
     global day_ost
     global background_static, background_active
-    global cloud_gallery
+    global cloud_L1, cloud_L2, cloud_M1, cloud_M2, cloud_M3, cloud_S1, cloud_S2
     
     #define window size and framerate (frames per second)
     size(666, 475)
@@ -70,11 +78,18 @@ def setup():
     #load images into variables
     background_static = loadImage("firewatch.png")
     background_active = loadImage("day_night.png")
-    cloud_gallery = loadImage("cloud_spritesheet.png")
+    
+    cloud_L1 = loadImage("cloud_sprite_L1.png")
+    cloud_L2 = loadImage("cloud_sprite_L2.png")
+    cloud_M1 = loadImage("cloud_sprite_M1.png")
+    cloud_M2 = loadImage("cloud_sprite_M2.png")
+    cloud_M3 = loadImage("cloud_sprite_M3.png")
+    cloud_S1 = loadImage("cloud_sprite_S1.png")
+    cloud_S2 = loadImage("cloud_sprite_S2.png")
     #face = loadImage("")
  
     #initialize active background variables  
-    bg_chunkX, bg_chunkY, bg_chunkIncr, bg_chunkSize, bg_backHeight, bg_backWidth, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY = initialize_image(475, 16000, 100, 5, 0, 0, 0, 0, 666, 475) 
+    bg_chunkX, bg_chunkY, bg_chunkIncr, bg_chunkSize, bg_backHeight, bg_backWidth, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY = initialize_image(475, 15000, 100, 5, 0, 0, 0, 0, 666, 475) 
     
     #display active background
     copy(background_active, bg_chunkX, bg_chunkY, bg_chunkSize, bg_backHeight, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY)
@@ -83,14 +98,25 @@ def setup():
 #===============================================================================================================================
 #===============================================================================================================================
 
-def draw_cloud():
-    pass
+def draw_cloud(c, x, y, Incr, gap):
+    image(c, x, y)
+    x -= Incr
+    if x + 150 < 0:
+        x = width
+    return x
     
 #===============================================================================================================================
 #===============================================================================================================================
 #===============================================================================================================================
     
 def display_text():
+    pass
+    
+#===============================================================================================================================
+#===============================================================================================================================
+#===============================================================================================================================
+    
+class rain():
     pass
     
 #===============================================================================================================================
@@ -121,6 +147,18 @@ def draw():
     copy(background_active, bg_chunkX, bg_chunkY, bg_chunkSize, bg_backHeight, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY) 
     #display static active
     image(background_static, 0, 100)
+    
+    global Lx1, Lx2, Mx1, Mx2, Mx3, Sx1 , Sx2
+    
+    Lx1 = draw_cloud(cloud_L1, Lx1, 95, 1, cloud_L1.width)
+    Lx2 = draw_cloud(cloud_L2, Lx2, 110, 1, cloud_L2.width)
+    
+    Mx1 = draw_cloud(cloud_M1, Mx1, 75, 1, cloud_M1.width)
+    Mx2 = draw_cloud(cloud_M2, Mx2, 140, 1, cloud_M2.width)
+    Mx3 = draw_cloud(cloud_M3, Mx3, 135, 1, cloud_M3.width)
+    
+    Sx1 = draw_cloud(cloud_S1, Sx1, 145, 1, cloud_S1.width)
+    Sx2 = draw_cloud(cloud_S2, Sx2, 80, 1, cloud_S2.width)
 
 #===============================================================================================================================
 #===============================================================================================================================
