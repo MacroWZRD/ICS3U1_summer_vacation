@@ -21,6 +21,9 @@ face = None
 sun = None
 moon = None
 
+S_angleRotate = 270
+M_angleRotate = 90
+
 rain = []
 
 #===============================================================================================================================
@@ -71,7 +74,7 @@ def draw_cloud(c, x, y, Incr, gap):
 #===============================================================================================================================
 class Drop():
     
-    def __init__(self, x, y, z):
+    def __init__(self, x, y, z, ):
         self.x = x
         self.y = y
         self.z = z
@@ -88,7 +91,7 @@ class Drop():
             self.yspeed = map(self.z, 0, 20, 4, 10)
         
     def show(self):
-        stroke(225)
+        stroke(random.randint(200, 225))
         strokeWeight(self.thick)
         line(self.x, self.y, self.x, self.y + self._length_)   
 
@@ -96,9 +99,30 @@ class Drop():
 #===============================================================================================================================
 #===============================================================================================================================    
             
-def sun_moon():
-    pass
+def sun_moon(x, S_AR, M_AR):
+    noStroke()
+    fill(252, 229, 112)
+    
+    pushMatrix();
+    translate(333, 300)
+    rotate(radians(S_AR))
+    ellipse(x, 0, 70, 70)
+    popMatrix()
+    
+    S_AR += 0.125
+    
+    fill(254, 252, 215)
 
+    pushMatrix();
+    translate(333, 300)
+    rotate(radians(M_AR))
+    ellipse(x, 0, 70, 70)
+    popMatrix()
+    
+    M_AR += 0.125
+
+    return S_AR, M_AR 
+    
 #===============================================================================================================================
 #===============================================================================================================================
 #===============================================================================================================================
@@ -115,10 +139,11 @@ def setup():
     global day_ost
     global background_static, background_active
     global cloud_L1, cloud_L2, cloud_M1, cloud_M2, cloud_M3, cloud_S1, cloud_S2
-    global face, sun, moon
+    global face, sun, moon, angleRotate
     
     #define window size and framerate (frames per second)
     size(666, 475)
+    ellipseMode(CENTER)
     frameRate(60)
     
     #initialize minim
@@ -158,6 +183,8 @@ def setup():
         #                x,                      y,                         z                      
         rain.append(Drop(random.randint(1, 666), random.randint(-500, -50), random.randint(0,20)))
     
+    
+    
 #===============================================================================================================================
 #===============================================================================================================================
 #===============================================================================================================================
@@ -174,14 +201,17 @@ def draw():
     
     #move background
     bg_chunkX, bg_chunkIncr, bg_chunkSize, bg_backWidth = active_image(bg_chunkX, bg_chunkIncr, bg_chunkSize, bg_backWidth) 
-        
+                
     #display active background   
     copy(background_active, bg_chunkX, bg_chunkY, bg_chunkSize, bg_backHeight, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY) 
-    #display static active
-    image(background_static, 0, 100)
     
     #sun-moon-face
+    global S_angleRotate, M_angleRotate
+    S_angleRotate, M_angleRotate = sun_moon(200, S_angleRotate, M_angleRotate)
     
+    #display static active
+    image(background_static, 0, 100)
+        
     #clouds
     global Lx1, Lx2, Mx1, Mx2, Mx3, Sx1 , Sx2
     
