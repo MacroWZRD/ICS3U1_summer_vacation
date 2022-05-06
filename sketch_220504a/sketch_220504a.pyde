@@ -4,6 +4,8 @@ import random
 
 #initialize variables
 day_ost = None
+night_ost = None
+ultimate_ost = None
 background_static = None
 background_active = None
 
@@ -23,6 +25,9 @@ moon = None
 
 S_angleRotate = 270
 M_angleRotate = 90
+
+total = 0
+msg_x = 675
 
 rain = []
 
@@ -91,7 +96,7 @@ class Drop():
             self.yspeed = map(self.z, 0, 20, 4, 10)
         
     def show(self):
-        stroke(random.randint(200, 225))
+        stroke(random.randint(200, 225),random.randint(200, 225),random.randint(200, 225))
         strokeWeight(self.thick)
         line(self.x, self.y, self.x, self.y + self._length_)   
 
@@ -99,7 +104,7 @@ class Drop():
 #===============================================================================================================================
 #===============================================================================================================================    
             
-def sun_moon(x, S_AR, M_AR):
+def sun_moon(x, S_AR, M_AR, check):
     noStroke()
     fill(252, 229, 112)
     
@@ -109,7 +114,7 @@ def sun_moon(x, S_AR, M_AR):
     ellipse(x, 0, 70, 70)
     popMatrix()
     
-    S_AR += 0.125
+    S_AR += 0.12075
     
     fill(254, 252, 215)
 
@@ -119,16 +124,31 @@ def sun_moon(x, S_AR, M_AR):
     ellipse(x, 0, 70, 70)
     popMatrix()
     
-    M_AR += 0.125
-
+    M_AR += 0.12075
+    
+    if check == 0:
+        S_AR = 270
+        M_AR = 90
+        
     return S_AR, M_AR 
     
 #===============================================================================================================================
 #===============================================================================================================================
 #===============================================================================================================================
     
-def display_text():
-    pass
+def display_text(days, x, check):
+    
+    if check == 0:
+        days += 1
+    
+    if days == 2:
+        text('"You will never be able to love anybody else until you love yourself." - Lelouch Lamperouge (Code Geass)', x, 50)
+        x -= 0.5
+    elif days > 2:
+        x = 675
+        days = 0
+        
+    return days, x
 
 #===============================================================================================================================
 #===============================================================================================================================
@@ -136,7 +156,7 @@ def display_text():
 
 def setup():
     #global sound and background assets
-    global day_ost
+    global day_ost, night_ost
     global background_static, background_active
     global cloud_L1, cloud_L2, cloud_M1, cloud_M2, cloud_M3, cloud_S1, cloud_S2
     global face, sun, moon, angleRotate
@@ -151,6 +171,7 @@ def setup():
     
     #load and play music file
     day_ost = m.loadFile("let_love_win.mp3")
+    night_ost = m.loadFile("the_calling.mp3")
     day_ost.play()
     
     #global active background variables
@@ -194,7 +215,7 @@ def draw():
     if day_ost.isPlaying() == False:
         day_ost.rewind()
         day_ost.play()
-    
+
     #global active background variables
     global bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY
     global bg_backHeight, bg_backWidth, bg_chunkSize, bg_chunkIncr, bg_chunkX, bg_chunkY
@@ -207,7 +228,7 @@ def draw():
     
     #sun-moon-face
     global S_angleRotate, M_angleRotate
-    S_angleRotate, M_angleRotate = sun_moon(200, S_angleRotate, M_angleRotate)
+    S_angleRotate, M_angleRotate = sun_moon(200, S_angleRotate, M_angleRotate, bg_chunkX)
     
     #display static active
     image(background_static, 0, 100)
@@ -224,6 +245,10 @@ def draw():
     
     Sx1 = draw_cloud(cloud_S1, Sx1, 145, 1, cloud_S1.width)
     Sx2 = draw_cloud(cloud_S2, Sx2, 80, 1, cloud_S2.width)
+    
+    #text
+    global total, msg_x
+    total, msg_x = display_text(total, msg_x, bg_chunkX)
     
     #rain
     for x in range(0, len(rain)):
