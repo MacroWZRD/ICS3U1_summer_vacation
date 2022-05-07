@@ -7,6 +7,7 @@ day_ost = None
 night_ost = None
 ultimate_ost = None
 ost_playlist = []
+song_num = 0
 
 background_static = None
 background_active = None
@@ -163,13 +164,35 @@ def display_text(days, x, check):
 #===============================================================================================================================
 #===============================================================================================================================
 
-def play_music(btn, song):
+def play_music(action, song):
+    global song_num
     active = song
     #set infinite loop; song will rewind and begin playing when song ends
-    if active.isPlaying() == False:
+    if active.isPlaying() == False and active.length() - active.position() <= 34000:
         active.rewind()
         active.play()
         
+    if action == "change":
+        if song_num == 2:
+            play_music("stop", ost_playlist[song_num]) 
+            song_num = 0
+        else:
+            play_music("stop", ost_playlist[song_num]) 
+            song_num += 1
+        play_music("play", ost_playlist[song_num])
+        
+    if action == "play":
+        active.play()
+        
+    if action == "pause":
+        active.pause()
+        
+    if action == "rewind":
+        active.rewind()
+         
+    if action == "stop":
+        active.rewind()
+        active.pause()
 
 #===============================================================================================================================
 #===============================================================================================================================
@@ -186,7 +209,7 @@ class button():
 
 def setup():
     #global sound and background assets
-    global day_ost, night_ost, ultimate_ost, ost_playlist
+    global day_ost, night_ost, ultimate_ost, ost_playlist, song_num
     global background_static, background_active
     global cloud_L1, cloud_L2, cloud_M1, cloud_M2, cloud_M3, cloud_S1, cloud_S2
     global face, sun, moon, angleRotate
@@ -204,6 +227,7 @@ def setup():
     night_ost = m.loadFile("the_calling.mp3")
     ultimate_ost = m.loadFile("monody.mp3")
     ost_playlist = [day_ost, night_ost, ultimate_ost]
+    day_ost.play()
     
     #global active background variables
     global bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY
@@ -278,7 +302,8 @@ def draw():
     total, msg_x = display_text(total, msg_x, bg_chunkX)
     
     #music player
-    play_music(True, ost_playlist[0])
+    play_music(True, ost_playlist[song_num])
+    print(ost_playlist[song_num].length() - ost_playlist[song_num].position())
     
     #rain
     for x in range(0, len(rain)):
@@ -290,8 +315,19 @@ def draw():
 #===============================================================================================================================
     
 def keyPressed():
+    global song_num
+    if key == "c":
+        play_music("change", ost_playlist[song_num])
+            
     if key == "s":
-        day_ost.pause()
+        play_music("pause", ost_playlist[song_num])
+        
+    if key == "p":
+        play_music("play", ost_playlist[song_num])
+        
+    if key == "r":
+        play_music("rewind", ost_playlist[song_num])
+        
     print(key)
 
     
