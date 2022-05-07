@@ -6,6 +6,8 @@ import random
 day_ost = None
 night_ost = None
 ultimate_ost = None
+ost_playlist = []
+
 background_static = None
 background_active = None
 
@@ -104,25 +106,32 @@ class Drop():
 #===============================================================================================================================
 #===============================================================================================================================    
             
-def sun_moon(x, S_AR, M_AR, check):
+def sun_moon(x, S_AR, M_AR, check, f):
     noStroke()
     fill(252, 229, 112)
+    f.resize(65, 65)
     
-    pushMatrix();
+    pushMatrix()
     translate(333, 300)
     rotate(radians(S_AR))
     ellipse(x, 0, 70, 70)
+    tint(255, 40)
+    image(f, x - 32.5, -32.5)
     popMatrix()
     
     S_AR += 0.12075
     
     fill(254, 252, 215)
 
-    pushMatrix();
+    pushMatrix()
     translate(333, 300)
     rotate(radians(M_AR))
     ellipse(x, 0, 70, 70)
+    tint(255, 40)
+    image(f, x - 32.5, -32.5)
     popMatrix()
+    
+    tint(255)
     
     M_AR += 0.12075
     
@@ -154,9 +163,30 @@ def display_text(days, x, check):
 #===============================================================================================================================
 #===============================================================================================================================
 
+def play_music(btn, song):
+    active = song
+    #set infinite loop; song will rewind and begin playing when song ends
+    if active.isPlaying() == False:
+        active.rewind()
+        active.play()
+        
+
+#===============================================================================================================================
+#===============================================================================================================================
+#===============================================================================================================================
+
+class button():
+    
+    def __init__(self, img):
+        self.img = img
+    
+#===============================================================================================================================
+#===============================================================================================================================
+#===============================================================================================================================
+
 def setup():
     #global sound and background assets
-    global day_ost, night_ost
+    global day_ost, night_ost, ultimate_ost, ost_playlist
     global background_static, background_active
     global cloud_L1, cloud_L2, cloud_M1, cloud_M2, cloud_M3, cloud_S1, cloud_S2
     global face, sun, moon, angleRotate
@@ -172,7 +202,8 @@ def setup():
     #load and play music file
     day_ost = m.loadFile("let_love_win.mp3")
     night_ost = m.loadFile("the_calling.mp3")
-    day_ost.play()
+    ultimate_ost = m.loadFile("monody.mp3")
+    ost_playlist = [day_ost, night_ost, ultimate_ost]
     
     #global active background variables
     global bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY
@@ -190,7 +221,7 @@ def setup():
     cloud_S1 = loadImage("cloud_sprite_S1.png")
     cloud_S2 = loadImage("cloud_sprite_S2.png")
     
-    #face = loadImage("")
+    face = loadImage("baby_face.png")
  
     #initialize active background variables  
     bg_chunkX, bg_chunkY, bg_chunkIncr, bg_chunkSize, bg_backHeight, bg_backWidth, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY = initialize_image(475, 15000, 100, 5, 0, 0, 0, 0, 666, 475) 
@@ -211,11 +242,7 @@ def setup():
 #===============================================================================================================================
     
 def draw():
-    #set infinite loop; song will rewind and begin playing when song ends
-    if day_ost.isPlaying() == False:
-        day_ost.rewind()
-        day_ost.play()
-
+    
     #global active background variables
     global bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY
     global bg_backHeight, bg_backWidth, bg_chunkSize, bg_chunkIncr, bg_chunkX, bg_chunkY
@@ -228,7 +255,7 @@ def draw():
     
     #sun-moon-face
     global S_angleRotate, M_angleRotate
-    S_angleRotate, M_angleRotate = sun_moon(200, S_angleRotate, M_angleRotate, bg_chunkX)
+    S_angleRotate, M_angleRotate = sun_moon(200, S_angleRotate, M_angleRotate, bg_chunkX, face)
     
     #display static active
     image(background_static, 0, 100)
@@ -249,6 +276,9 @@ def draw():
     #text
     global total, msg_x
     total, msg_x = display_text(total, msg_x, bg_chunkX)
+    
+    #music player
+    play_music(True, ost_playlist[0])
     
     #rain
     for x in range(0, len(rain)):
