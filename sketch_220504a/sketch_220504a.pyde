@@ -214,6 +214,8 @@ class button():
         self.state = state
         
     def show(self):
+        
+        tint(255)
         image(self.img, self.x, self.y)
         
     def clicked(self):
@@ -341,27 +343,17 @@ def draw():
     fw = 0
     global st
     if ost_playlist[song_num].isPlaying():
-        
-        tint(255)
-        
         pa = button(mPause, "pause", 313, 400, mPause.width, mPause.height, st)
         pa.show()
         play_music(pa.clicked(), ost_playlist[song_num])
     else:
-        
-        tint(255)
-        
         pl = button(mPlay, "play", 313, 400, mPlay.width, mPlay.height, st)
         pl.show()
         play_music(pl.clicked(), ost_playlist[song_num])    
     
-    tint(255)
-    
     bw = button(mBackward, "rewind", 253, 405, mPause.width, mPause.height, st)
     bw.show()
     play_music(bw.clicked(), ost_playlist[song_num])
-
-    tint(255)
 
     fw = button(mForward, "change", 368, 405, mPlay.width, mPlay.height, st)
     fw.show()
