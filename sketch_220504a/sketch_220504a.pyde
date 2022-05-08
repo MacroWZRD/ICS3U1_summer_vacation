@@ -8,6 +8,7 @@ night_ost = None
 ultimate_ost = None
 ost_playlist = []
 song_num = 0
+st = False
 
 background_static = None
 background_active = None
@@ -193,6 +194,9 @@ def play_music(action, song):
     if action == "stop":
         active.rewind()
         active.pause()
+        
+    if action == None:
+        pass
 
 #===============================================================================================================================
 #===============================================================================================================================
@@ -200,8 +204,26 @@ def play_music(action, song):
 
 class button():
     
-    def __init__(self, img):
+    def __init__(self, img, action, x, y, w, h, state):
         self.img = img
+        self.action = action
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+        self.state = state
+        
+    def show(self):
+        image(self.img, self.x, self.y)
+        
+    def clicked(self):
+        if (mouseX > self.x and mouseY > self.y) and (mouseX < self.x + self.w and mouseY < self.y + self.h):
+            tint(200)
+            image(self.img, self.x, self.y)
+            if mousePressed == True and self.state == False:
+                return self.action
+            
+        return None
     
 #===============================================================================================================================
 #===============================================================================================================================
@@ -213,6 +235,7 @@ def setup():
     global background_static, background_active
     global cloud_L1, cloud_L2, cloud_M1, cloud_M2, cloud_M3, cloud_S1, cloud_S2
     global face, sun, moon, angleRotate
+    global mPlay, mPause, mBackward, mForward
     
     #define window size and framerate (frames per second)
     size(666, 475)
@@ -252,6 +275,16 @@ def setup():
     
     #display active background
     copy(background_active, bg_chunkX, bg_chunkY, bg_chunkSize, bg_backHeight, bg_cornerPointX, bg_cornerPointY, bg_canvasX, bg_canvasY)
+    
+    #audio player icons
+    mPlay = loadImage("play.png")
+    mPlay.resize(40,40)
+    mPause = loadImage("pause.png")
+    mPause.resize(40,40)
+    mBackward = loadImage("backward.png")
+    mBackward.resize(48,30)
+    mForward = loadImage("forward.png")
+    mForward.resize(48,30)
     
     #rain
     global rain
@@ -302,8 +335,39 @@ def draw():
     total, msg_x = display_text(total, msg_x, bg_chunkX)
     
     #music player
-    play_music(True, ost_playlist[song_num])
-    print(ost_playlist[song_num].length() - ost_playlist[song_num].position())
+    p1 = 0
+    pa = 0
+    bw = 0
+    fw = 0
+    global st
+    if ost_playlist[song_num].isPlaying():
+        
+        tint(255)
+        
+        pa = button(mPause, "pause", 313, 400, mPause.width, mPause.height, st)
+        pa.show()
+        play_music(pa.clicked(), ost_playlist[song_num])
+    else:
+        
+        tint(255)
+        
+        pl = button(mPlay, "play", 313, 400, mPlay.width, mPlay.height, st)
+        pl.show()
+        play_music(pl.clicked(), ost_playlist[song_num])    
+    
+    tint(255)
+    
+    bw = button(mBackward, "rewind", 253, 405, mPause.width, mPause.height, st)
+    bw.show()
+    play_music(bw.clicked(), ost_playlist[song_num])
+
+    tint(255)
+
+    fw = button(mForward, "change", 368, 405, mPlay.width, mPlay.height, st)
+    fw.show()
+    play_music(fw.clicked(), ost_playlist[song_num])   
+    
+    st = mousePressed
     
     #rain
     for x in range(0, len(rain)):
