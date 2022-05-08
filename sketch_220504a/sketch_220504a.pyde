@@ -118,7 +118,7 @@ def sun_moon(x, S_AR, M_AR, check, f):
     rotate(radians(S_AR))
     ellipse(x, 0, 70, 70)
     tint(255, 40)
-    image(f, x - 32.5, -32.5)
+    # image(f, x - 32.5, -32.5)
     popMatrix()
     
     S_AR += 0.12075
@@ -130,7 +130,7 @@ def sun_moon(x, S_AR, M_AR, check, f):
     rotate(radians(M_AR))
     ellipse(x, 0, 70, 70)
     tint(255, 40)
-    image(f, x - 32.5, -32.5)
+    # image(f, x - 32.5, -32.5)
     popMatrix()
     
     tint(255)
