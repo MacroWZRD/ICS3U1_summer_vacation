@@ -71,9 +71,11 @@ def active_image(chunkX, chunkIncr, chunkSize, backWidth):
 #===============================================================================================================================
 #===============================================================================================================================
 
+#draw a cloud taking in a unique image, xy coord, increment, and gap between each loop
 def draw_cloud(c, x, y, Incr, gap):
     image(c, x, y)
     x -= Incr
+    #reset the cloud to be off the screen
     if x + 150 < 0:
         x = width
     return x
@@ -81,8 +83,11 @@ def draw_cloud(c, x, y, Incr, gap):
 #===============================================================================================================================
 #===============================================================================================================================
 #===============================================================================================================================
+
+#initiate a class for rain drops
 class Drop():
     
+    #the object attributes
     def __init__(self, x, y, z, ):
         self.x = x
         self.y = y
@@ -90,16 +95,21 @@ class Drop():
         self.yspeed = map(z, 0, 20, 4, 10)
         self._length_ = map(z, 0, 20, 10, 15)
         self.thick = map(z, 0, 20, 0.02, 0.1)
-        
+     
+    #fall function for rain drop
     def fall(self):
+        #add to the y speed to mimic gravity
         self.y += self.yspeed
         self.yspeed += 0.05
         
+        #reset the raindrop to the top of the screen once it passed the bottom of the screen
         if self.y > height:
             self.y = random.randint(-200, -100)
             self.yspeed = map(self.z, 0, 20, 4, 10)
-        
+
+    #draw the rain drop on the screen
     def show(self):
+        #randomize rain color and thickness
         stroke(random.randint(200, 225),random.randint(200, 225),random.randint(200, 225))
         strokeWeight(self.thick)
         line(self.x, self.y, self.x, self.y + self._length_)   
@@ -107,36 +117,49 @@ class Drop():
 #===============================================================================================================================
 #===============================================================================================================================
 #===============================================================================================================================    
-            
+  
+#function to draw and move sun and moon        
 def sun_moon(x, S_AR, M_AR, check, f):
+    #setup the sun/moon object size and colors
     noStroke()
     fill(252, 229, 112)
     f.resize(65, 65)
     
+    #change to a higher layer (creates a new canvas separate from the original canvas)
     pushMatrix()
+    #define rotation point and rotate objects according to the degrees specified)
     translate(333, 300)
     rotate(radians(S_AR))
     ellipse(x, 0, 70, 70)
     tint(255, 40)
-    # image(f, x - 32.5, -32.5)
+    image(f, x - 32.5, -32.5)
+    #change back to the original canvas
     popMatrix()
     
+    # increase the sun rotation angle 
     S_AR += 0.12075
     
+    #set color for the moon
     fill(254, 252, 215)
-
+    
+    #change to a higher layer (creates a new canvas separate from the original canvas)
     pushMatrix()
+    #define rotation point and rotate objects according to the degrees specified)
     translate(333, 300)
     rotate(radians(M_AR))
     ellipse(x, 0, 70, 70)
     tint(255, 40)
-    # image(f, x - 32.5, -32.5)
+    image(f, x - 32.5, -32.5)
+    #change back to the original canvas
     popMatrix()
     
+    #reset transparency
     tint(255)
     
+    # increase the sun rotation angle 
     M_AR += 0.12075
     
+    # reset the sun and moon rotation angle after one day cycle
     if check == 0:
         S_AR = 270
         M_AR = 90
@@ -146,16 +169,23 @@ def sun_moon(x, S_AR, M_AR, check, f):
 #===============================================================================================================================
 #===============================================================================================================================
 #===============================================================================================================================
-    
+
+#draw text moving across the screen`
 def display_text(days, x, check):
     
+    #check for every new day cycle
     if check == 0:
         days += 1
     
+    #check if 3 day cycles have passed
     if days == 2:
+        #draw and move text
         text('"You will never be able to love anybody else until you love yourself." - Lelouch Lamperouge (Code Geass)', x, 50)
         x -= 0.5
+        
+    #check if 3 day cycle has passed
     elif days > 2:
+        #reset all values
         x = 675
         days = 0
         
@@ -165,36 +195,46 @@ def display_text(days, x, check):
 #===============================================================================================================================
 #===============================================================================================================================
 
+#music player system
 def play_music(action, song):
+    #globalize and set required variables
     global song_num
     active = song
     #set infinite loop; song will rewind and begin playing when song ends
     if active.isPlaying() == False and active.length() - active.position() <= 34000:
         active.rewind()
         active.play()
-        
+    
+    #switch to other songs in the 3 song playlist
     if action == "change":
+        #reset the song selector to zero to prevent out of index error
         if song_num == 2:
             play_music("stop", ost_playlist[song_num]) 
             song_num = 0
+        #increment the song selector to pisck the next song in the playlist array
         else:
             play_music("stop", ost_playlist[song_num]) 
             song_num += 1
         play_music("play", ost_playlist[song_num])
-        
+     
+    #play the song
     if action == "play":
         active.play()
-        
+
+    #pause the song
     if action == "pause":
         active.pause()
         
+    #rewind the song
     if action == "rewind":
         active.rewind()
-         
+
+    #stop the song
     if action == "stop":
         active.rewind()
         active.pause()
-        
+      
+    #do nothing
     if action == None:
         pass
 
@@ -202,8 +242,10 @@ def play_music(action, song):
 #===============================================================================================================================
 #===============================================================================================================================
 
+#create button class
 class button():
     
+    #the object attributes
     def __init__(self, img, action, x, y, w, h, state):
         self.img = img
         self.action = action
@@ -212,16 +254,19 @@ class button():
         self.w = w
         self.h = h
         self.state = state
-        
+    
+    #display original buttons: no tint 
     def show(self):
-        
         tint(255)
         image(self.img, self.x, self.y)
-        
+     
+    #detect mouse hover/mouse click
     def clicked(self):
         if (mouseX > self.x and mouseY > self.y) and (mouseX < self.x + self.w and mouseY < self.y + self.h):
+            #tint the color
             tint(200)
             image(self.img, self.x, self.y)
+            #check for different previous button clicks/state and returns "action"
             if mousePressed == True and self.state == False:
                 return self.action
             
@@ -262,6 +307,7 @@ def setup():
     background_static = loadImage("firewatch.png")
     background_active = loadImage("day_night.png")
     
+    #load cloud images
     cloud_L1 = loadImage("cloud_sprite_L1.png")
     cloud_L2 = loadImage("cloud_sprite_L2.png")
     cloud_M1 = loadImage("cloud_sprite_M1.png")
@@ -270,6 +316,7 @@ def setup():
     cloud_S1 = loadImage("cloud_sprite_S1.png")
     cloud_S2 = loadImage("cloud_sprite_S2.png")
     
+    #load face images
     face = loadImage("baby_face.png")
  
     #initialize active background variables  
@@ -290,6 +337,7 @@ def setup():
     
     #rain
     global rain
+    #create 500 rain drops
     for i in range(500):
         #                x,                      y,                         z                      
         rain.append(Drop(random.randint(1, 666), random.randint(-500, -50), random.randint(0,20)))
@@ -342,6 +390,7 @@ def draw():
     bw = 0
     fw = 0
     global st
+    #switch between "pause" and "play" depending on if song is playing
     if ost_playlist[song_num].isPlaying():
         pa = button(mPause, "pause", 313, 400, mPause.width, mPause.height, st)
         pa.show()
@@ -369,7 +418,8 @@ def draw():
 #===============================================================================================================================
 #===============================================================================================================================
 #===============================================================================================================================
-    
+   
+#detects key inputs
 def keyPressed():
     global song_num
     if key == "c":
